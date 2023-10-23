@@ -32,7 +32,7 @@ public class AcademicUnit extends HttpServlet {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         programmeDAO = new ProgrammeDAO(sessionFactory);
         facultyDAO = new FacultyDAO(sessionFactory);
-        departmentDAO = new DepartmentDAO(sessionFactory);
+        departmentDAO = new DepartmentDAO();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -117,6 +117,16 @@ public class AcademicUnit extends HttpServlet {
                     String facultyList = json.toJson(faculties);
                     response.setContentType("text/html");
                     response.getWriter().write(facultyList);
+                }
+            }else if ("get_departments".equals(action)) {
+                String selectedFacultyId = request.getParameter("selectedFacultyId");
+                if (selectedFacultyId != null && !selectedFacultyId.isEmpty()) {
+                    UUID facultyId = UUID.fromString(selectedFacultyId);
+                    List<Department> departments = departmentDAO.getAllDepartmentsByFaculty(facultyId);
+                    Gson json = new Gson();
+                    String departmentList = json.toJson(departments);
+                    response.setContentType("text/html");
+                    response.getWriter().write(departmentList);
                 }
             }
         }

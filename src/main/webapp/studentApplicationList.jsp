@@ -33,11 +33,12 @@
             <td>${student.phone}</td>
             <td>${student.parent}</td>
             <td>${student.parPhone}</td>
-            <td>${student.major}</td>
+            <td>${student.department.name}</td>
             <td>${student.registrationStatus}</td>
             <td>
                 <form action="studentApplication" method="get">
                     <input type="hidden" name="student_email" value="${student.email}" />
+                    <input type="hidden" name="department_id" value="${student.department.id}" />
                     <button class="edit-button" type="submit" name="action" value="approve">Approve</button>
                     <button class="edit-button" type="submit" name="action" value="edit">Edit</button>
                     <button class="delete-button" type="submit" name="action" value="delete">Delete</button>

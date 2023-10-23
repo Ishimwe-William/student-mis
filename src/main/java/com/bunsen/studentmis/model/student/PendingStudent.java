@@ -1,12 +1,21 @@
-package com.bunsen.studentmis.model;
+package com.bunsen.studentmis.model.student;
 
+import com.bunsen.studentmis.model.ERegistrationStatus;
+import com.bunsen.studentmis.model.academicUnit.Department;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import java.util.UUID;
 
 @Entity
-public class Student {
+public class PendingStudent {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")
+    private UUID id;
     private String fullName;
     @Column(unique = true)
     private String email;
@@ -14,14 +23,15 @@ public class Student {
     private String parent;
     private String dob;
     private String parPhone;
-    private String major;
+    @OneToOne
+    private Department department;
     private String invite;
     private String likes;
     private String message;
     @Enumerated(EnumType.STRING)
     private ERegistrationStatus registrationStatus;
 
-    public Student() {
+    public PendingStudent() {
     }
 
     public ERegistrationStatus getRegistrationStatus() {
@@ -30,6 +40,15 @@ public class Student {
 
     public void setRegistrationStatus(ERegistrationStatus registrationStatus) {
         this.registrationStatus = registrationStatus;
+    }
+
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public String[] getLikesArray() {
@@ -88,13 +107,6 @@ public class Student {
         this.parPhone = parPhone;
     }
 
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
-    }
 
     public String getInvite() {
         return invite;
@@ -112,15 +124,29 @@ public class Student {
         this.message = message;
     }
 
-    public void clear(){
-        this.setLikesArray(null);
-        this.setMessage("");
-        this.setInvite("");
-        this.setMajor("");
-        this.setParent("");
-        this.setPhone("");
-        this.setParPhone("");
-        this.setEmail("");
-        this.setFullName("");
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "PendingStudent{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", parent='" + parent + '\'' +
+                ", dob='" + dob + '\'' +
+                ", parPhone='" + parPhone + '\'' +
+                ", department=" + department +
+                ", invite='" + invite + '\'' +
+                ", likes='" + likes + '\'' +
+                ", message='" + message + '\'' +
+                ", registrationStatus=" + registrationStatus +
+                '}';
     }
 }

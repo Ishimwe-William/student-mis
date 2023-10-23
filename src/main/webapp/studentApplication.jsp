@@ -7,17 +7,119 @@
     <link rel="stylesheet" href="static/css/index.css">
     <script src="static/js/index.js"></script>
     <script src="static/js/logoutOnExit.js"></script>
+    <script src="/webjars/jquery/3.6.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Update the existing code to populate the programs dropdown
+            $.ajax({
+                type: "GET",
+                url: "academicUnitHome",
+                data: {operation: "get_programs"},
+                dataType: "json",
+                success: function (data) {
+                    let programSelect = $("#programme_select"); // Make sure this ID matches your HTML
+                    programSelect.empty();
+                    programSelect.append('<option value="">--Select Programme--</option>');
+                    $.each(data, function (key, value) {
+                        programSelect.append($('<option></option>').attr("value", value.id).text(value.name));
+                    });
+
+                    // Bind change event to the programs dropdown
+                    programSelect.change(function () {
+                        let selectedProgramId = $(this).val();
+                        if (selectedProgramId !== "") {
+                            populateFaculties(selectedProgramId);
+                        }
+                    });
+                }
+            });
+
+
+            // Update the existing function to populate faculties
+            function populateFaculties(selectedProgramId) {
+                $.ajax({
+                    type: "GET",
+                    url: "academicUnitHome",
+                    data: {
+                        operation: "get_faculty",
+                        selectedProgramId: selectedProgramId,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        let facultySelect = $("#faculty_Select"); // Make sure this ID matches your HTML
+                        facultySelect.empty();
+                        facultySelect.append('<option value="">--Select Faculty--</option>');
+                        $.each(data, function (key, value) {
+                            facultySelect.append($('<option></option>').attr("value", value.id).text(value.name));
+                        });
+                        // Bind change event to the faculty dropdown
+                        facultySelect.change(function () {
+                            let selectedFacultyId = $(this).val();
+                            if (selectedFacultyId !== "") {
+                                populateDepartments(selectedFacultyId); // Call the new function
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Function to populate the department dropdown based on the selected faculty
+            function populateDepartments(selectedFacultyId) {
+                $.ajax({
+                    type: "GET",
+                    url: "academicUnitHome",
+                    data: {
+                        operation: "get_departments",
+                        selectedFacultyId: selectedFacultyId,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        let departmentSelect = $("#department_select"); // Make sure this ID matches your HTML
+                        departmentSelect.empty();
+                        departmentSelect.append('<option value="">--Select Department--</option>');
+                        $.each(data, function (key, value) {
+                            departmentSelect.append($('<option></option>').attr("value", value.id).text(value.name));
+                        });
+
+                        // Populate the hidden department_id input field
+                        const selectedDepartmentId = departmentSelect.val();
+                        $("#selected_department_id").val(selectedDepartmentId);
+                    }
+                });
+            }
+
+        });
+        $("#admissionForm").submit(function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Ensure that department_id is populated
+            const selectedDepartmentId = $("#department_select").val();
+            $("#selected_department_id").val(selectedDepartmentId);
+
+            // Now, you can submit the form with the department_id included
+            $.ajax({
+                type: "POST",
+                url: "studentApplication",
+                data: $(this).serialize(), // Serialize the entire form data
+                success: function (response) {
+                    // Handle the response or redirect to another page as needed
+                }
+            });
+        });
+
+    </script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 <br/>
-<div class="photo-upload">
-    <label for="photo" class="photo-label">
-        <img id="preview" src="placeholder-image.jpg" alt="Upload a photo">
-        <div class="upload-icon">+</div>
-    </label>
-    <input type="file" id="photo" name="photo" accept="image/*" onchange="previewImage(this)">
-</div>
+<%--<div class="photo-upload">--%>
+<%--    <label for="photo" class="photo-label">--%>
+<%--        <img id="preview" src="placeholder-image.jpg" alt="Upload a photo">--%>
+<%--        <div class="upload-icon">+</div>--%>
+<%--    </label>--%>
+<%--    <input type="file" id="photo" name="photo" accept="image/*" onchange="previewImage(this)">--%>
+<%--</div>--%>
+
 <form method="post" action="studentApplication" id="admissionForm">
     <input name="action" value="create_student" hidden>
     <fieldset>
@@ -46,47 +148,30 @@
             <label class="question" for="the_dob">What is your date of birth?</label>
             <input type="date" id="the_dob" name="the_dob" placeholder="Enter your date of birth" size="50" required>
         </p>
-        <p>
-            <label class="question" for="diploma_file">Upload Your A2 Diploma (PDF only):</label>
-            <input type="file" id="diploma_file" name="diploma_file" accept=".pdf">
-        </p>
+<%--        <p>--%>
+<%--            <label class="question" for="diploma_file">Upload Your A2 Diploma (PDF only):</label>--%>
+<%--            <input type="file" id="diploma_file" name="diploma_file" accept=".pdf">--%>
+<%--        </p>--%>
     </fieldset>
     <fieldset>
         <legend>Academic Programs</legend>
-        <h3>Business Department</h3>
-        <p>
-            <span class="question"><i>Choose a Faculty within Business Department:</i></span><br>
-        <hr>
-        <span id="business">
-            <input type="radio" id="business_accounting" name="majorFac" value="Accounting">
-            <label for="business_accounting">Accounting</label>
-
-            <input type="radio" id="business_management" name="majorFac" value="Management">
-            <label for="business_management">Management</label>
-
-            <input type="radio" id="business_finance" name="majorFac" value="Finance">
-            <label for="business_finance">Finance </label>
-
-            <input type="radio" id="business_marketing" name="majorFac" value="Marketing">
-            <label for="business_marketing">Marketing </label>
-        </span>
-        </p>
-
-        <h3>IT Department</h3>
-        <p>
-            <span class="question"><i>Choose a Faculty within IT Department:</i></span><br>
-        <hr>
-        <span id="IT">
-            <input type="radio" id="it_software" name="majorFac" value="Software Engineering">
-            <label for="it_software">Software Engineering</label>
-
-            <input type="radio" id="it_network" name="majorFac" value="Networks and Communications Systems">
-            <label for="it_network">Networks and Communications Systems</label>
-
-            <input type="radio" id="it_info" name="majorFac" value="Information Management">
-            <label for="it_info">Information Management </label>
-        </span>
-        </p>
+        <div>
+       <input name="action" value="load_programme" hidden>
+            <label class="question" for="the_dob">Choose Programme</label>
+            <input type="hidden" name="action" value="selected_department">
+            <select name="faculty_id" id="programme_select">
+                <!-- Programme options will be populated dynamically using JavaScript -->
+            </select>
+            <label class="question" for="the_dob">Choose Faculty</label>
+            <select name="faculty_id" id="faculty_Select">
+                <!-- Faculty options will be populated dynamically using JavaScript -->
+            </select>
+            <label class="question" for="the_dob">Choose Department</label>
+            <select name="department_id" id="department_select">
+                <!-- Department options will be populated dynamically using JavaScript -->
+            </select>
+            <input type="hidden" name="department_id" id="selected_department_id" value="">
+        </div>
     </fieldset>
     <fieldset>
         <legend>Survey Questions</legend>

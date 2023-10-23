@@ -8,7 +8,8 @@
         <property name="hibernate.connection.password">mysql</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
-        <mapping class="com.bunsen.studentmis.model.Student"/>
+        <mapping class="com.bunsen.studentmis.model.student.PendingStudent"/>
+        <mapping class="com.bunsen.studentmis.model.student.AdmittedStudent"/>
         <mapping class="com.bunsen.studentmis.model.AcademicUnit"/>
         <mapping class="com.bunsen.studentmis.model.Semester"/>
         <mapping class="com.bunsen.studentmis.model.CourseDefinition"/>

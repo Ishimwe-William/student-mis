@@ -11,7 +11,7 @@
 <p>Are you sure you want to delete the following applicant?</p>
 <p><strong>Name:</strong> ${studentToDelete.fullName}</p>
 <p><strong>email:</strong> ${studentToDelete.email}</p>
-<p><strong>Major:</strong> ${studentToDelete.major}</p>
+<p><strong>Major:</strong> ${studentToDelete.department.name}</p>
 
 <form action="studentApplication" method="post">
     <input type="hidden" name="action" value="confirmDelete">
