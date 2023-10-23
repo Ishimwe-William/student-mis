@@ -1,0 +1,19 @@
+#scrollBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#scrollBtn:hover {
+    background-color: #c6a648;
+}
+
+.visible {
+    display: block;
+}

@@ -1,0 +1,33 @@
+/* Styles for the Edit Semester page */
+h1 {
+    color: #333; /* Header text color */
+}
+
+label {
+    display: block; /* Make labels block-level to stack them */
+    margin-bottom: 8px; /* Space between labels and input fields */
+}
+
+input[type="text"],
+input[type="date"] {
+    width: 100%; /* Make input fields fill their container */
+    padding: 8px; /* Add some padding to input fields */
+    margin-bottom: 16px; /* Space between input fields */
+}
+
+input[type="submit"] {
+    background-color: #007BFF; /* Blue background color for the "Update Semester" button */
+    color: white; /* White text color */
+    border: none; /* Remove button border */
+    padding: 12px 20px; /* Padding for the button */
+    cursor: pointer; /* Change cursor to a pointer on hover */
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+a {
+    text-decoration: none; /* Remove underline from links */
+    margin-right: 10px; /* Space between links */
+}

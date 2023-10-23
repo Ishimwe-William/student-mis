@@ -1,0 +1,21 @@
+footer {
+    background-color: #628794;
+    color: #000000;
+    padding: 20px;
+    text-align: center;
+    width: 97%;
+}
+footer a {
+    color:white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+    color: #c6a648;
+}
+.social-icons a img {
+    width: 15px;
+    height: 13px;
+    margin-right: 10px;
+}
