@@ -14,6 +14,7 @@
 <h3>${course.name}</h3>
 <p><strong>Course Code:</strong> ${course.code}</p>
 <div>
+    <p><strong>Number of Credits:</strong>${course.credits}</p>
     <p><strong>Description:</strong>${course.description}</p>
 </div>
 

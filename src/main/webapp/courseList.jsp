@@ -15,6 +15,7 @@
     <tr>
         <th>Course Name</th>
         <th>Course Code</th>
+        <th>Course Credits</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -23,6 +24,7 @@
         <tr>
             <td>${course.name}</td>
             <td>${course.code}</td>
+            <td>${course.credits}</td>
             <td>
                 <form action="/courseDefinitionServlet" method="get">
                     <input type="hidden" name="course_id" value="${course.course_def_id}" />

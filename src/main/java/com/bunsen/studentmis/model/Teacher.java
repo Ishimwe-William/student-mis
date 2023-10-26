@@ -30,7 +30,7 @@ public class Teacher {
     private String type;
     private String created_at;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "teacher_coursedefinition",
             joinColumns = @JoinColumn(name = "teachers_teacher_id"),

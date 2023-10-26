@@ -32,49 +32,53 @@ public class CourseDefinitionServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action=req.getParameter("action");
-        if(action==null){
-            List<CourseDefinition> courseDefinitions=dao.getAllCourses();
+        String action = req.getParameter("action");
+        CourseDefinition course;
+        if (action==null) {
+            List<CourseDefinition> courseDefinitions = dao.getAllCourses();
             req.setAttribute("courses", courseDefinitions);
-            req.getRequestDispatcher("courseList.jsp").forward(req,resp);
-        }else if("create".equals(action)){
-            req.getRequestDispatcher("/courseDefinition.jsp").forward(req, resp);
-        }
-        else if("add_teachers".equals(action)){
-            TeacherDao teacherDao=new TeacherDao();
-            List<Teacher> teachers=teacherDao.getAllTeacher();
-            req.setAttribute("teachers", teachers);
-            UUID course_id = UUID.fromString(req.getParameter("course_id"));
-            CourseDefinition course = dao.getCourseById(course_id);
-            req.setAttribute("course", course);
+            req.getRequestDispatcher("courseList.jsp").forward(req, resp);
+        } else {
+            switch (action) {
+                case "create":
+                    req.getRequestDispatcher("/courseDefinition.jsp").forward(req, resp);
+                    break;
+                case "add_teachers":
+                    TeacherDao teacherDao = new TeacherDao();
+                    List<Teacher> teachers = teacherDao.getAllTeacher();
+                    req.setAttribute("teachers", teachers);
+                    UUID course_id = UUID.fromString(req.getParameter("course_id"));
+                    course = dao.getCourseById(course_id);
+                    req.setAttribute("course", course);
+                    req.getRequestDispatcher("assignTeachersToCourses.jsp").forward(req, resp);
+                    break;
+                case "view":
+                    String courseId = req.getParameter("course_id");
+                    course = dao.getCourseById(UUID.fromString(courseId));
 
-            req.getRequestDispatcher("assignTeachersToCourses.jsp").forward(req,resp);
-        }
-        else if ("view".equals(action)) {
-            String courseId = req.getParameter("course_id");
-            CourseDefinition course = dao.getCourseById(UUID.fromString(courseId));
+                    if (course != null) {
+                        // Retrieve associated teachers
+                        Set<Teacher> teacherSet = course.getTeachers();
 
-            if (course != null) {
-                // Retrieve associated teachers
-                Set<Teacher> teachers = course.getTeachers();
+                        req.setAttribute("course", course);
+                        req.setAttribute("teachers", teacherSet);
 
-                req.setAttribute("course", course);
-                req.setAttribute("teachers", teachers);
-
-                // Forward to the viewCourse.jsp page
-                req.getRequestDispatcher("/viewCourse.jsp").forward(req, resp);
-            } else {
-                // Handle error (course not found)
-                resp.sendRedirect("error.jsp");
+                        // Forward to the viewCourse.jsp page
+                        req.getRequestDispatcher("/viewCourse.jsp").forward(req, resp);
+                    } else {
+                        // Handle error (course not found)
+                        resp.sendRedirect("error.jsp");
+                    }
+                    break;
             }
         }
-
     }
-
     private CourseDefinition courseRequest(HttpServletRequest request) {
         CourseDefinition courseDefinition = new CourseDefinition();
-        courseDefinition.setCode(request.getParameter("code").toUpperCase());
+        courseDefinition.setCode(request.getParameter("code").trim().toUpperCase());
         courseDefinition.setName(request.getParameter("name"));
+        courseDefinition.setCredits(Integer.valueOf(request.getParameter("credits")));
+        System.out.println(Integer.valueOf(request.getParameter("credits")));
         courseDefinition.setDescription(request.getParameter("description"));
         return courseDefinition;
     }

@@ -19,6 +19,7 @@ public class CourseDefinition {
     @Column(unique = true)
     private String code;
     private String name;
+    private Integer credits;
     private String description;
 
     @ManyToMany(mappedBy = "courseDefinitions", fetch = FetchType.EAGER)
@@ -78,13 +79,11 @@ public class CourseDefinition {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "CourseDefinition{" +
-                "course_def_id=" + course_def_id +
-                ", code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+    public Integer getCredits() {
+        return credits;
+    }
+
+    public void setCredits(Integer credits) {
+        this.credits = credits;
     }
 }
