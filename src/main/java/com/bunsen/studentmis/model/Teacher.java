@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +18,7 @@ public class Teacher {
     @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     @Type(type = "uuid-char")
     private UUID teacher_id;
+
     private String name;
     private String dob;
     private String gender;
@@ -24,20 +28,43 @@ public class Teacher {
     private String email;
     private String phone;
     private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     private String created_at;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "teacher_coursedefinition",
+            joinColumns = @JoinColumn(name = "teachers_teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "courseDefinitions_course_def_id")
+    )
+    private Set<CourseDefinition> courseDefinitions = new HashSet<>();
+
+    // Date format pattern
+    private static final String DATE_FORMAT_PATTERN = "MM-dd-yyyy";
+
     public Teacher() {
-        this.teacher_id=UUID.randomUUID();
-        this.created_at= String.valueOf(new Date());
+        this.teacher_id = UUID.randomUUID();
+        this.created_at = formatCreatedAt(new Date());
+    }
+
+    public Set<CourseDefinition> getCourseDefinitions() {
+        return courseDefinitions;
+    }
+
+    public void setCourseDefinitions(Set<CourseDefinition> courseDefinitions) {
+        this.courseDefinitions = courseDefinitions;
+    }
+    public void addCourseDefinition(CourseDefinition courseDefinition) {
+        this.courseDefinitions.add(courseDefinition);
+        courseDefinition.getTeachers().add(this);
+    }
+
+    public void removeCourseDefinition(CourseDefinition courseDefinition) {
+        this.courseDefinitions.remove(courseDefinition);
+        courseDefinition.getTeachers().remove(this);
+    }
+    private String formatCreatedAt(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+        return dateFormat.format(date);
     }
 
     public UUID getTeacher_id() {
@@ -96,6 +123,14 @@ public class Teacher {
         this.phone = phone;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getCreated_at() {
         return created_at;
     }
@@ -118,3 +153,4 @@ public class Teacher {
                 '}';
     }
 }
+

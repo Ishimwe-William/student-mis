@@ -1,5 +1,6 @@
 package com.bunsen.studentmis.model.student;
 
+import com.bunsen.studentmis.model.ERegistrationStatus;
 import com.bunsen.studentmis.model.academicUnit.Department;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,12 +21,22 @@ public class AdmittedStudent  implements Serializable {
     private String parent;
     private String dob;
     private String parPhone;
+    @Enumerated(EnumType.STRING)
+    private ERegistrationStatus status;
     private Integer currentSemester;
     @OneToOne
     private Department department;
     public AdmittedStudent() {
         this.currentSemester = 1;
         this.id=UUID.randomUUID();
+    }
+
+    public ERegistrationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ERegistrationStatus status) {
+        this.status = status;
     }
 
     public String getFullName() {

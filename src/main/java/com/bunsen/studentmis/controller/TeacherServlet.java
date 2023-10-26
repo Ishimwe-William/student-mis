@@ -25,8 +25,9 @@ public class TeacherServlet extends HttpServlet {
         if(action==null){
             List<Teacher> teachers = dao.getAllTeacher();
             request.setAttribute("teachers", teachers);
-            request.getRequestDispatcher("/teacherServlet").forward(request, response);
-        }else if("create".equals(action)){
+            request.getRequestDispatcher("/teacherList.jsp").forward(request, response);
+        }
+        else if("create".equals(action)){
             request.getRequestDispatcher("/teacher.jsp").forward(request, response);
             return;
         }else if("edit".equals(action)){
@@ -51,7 +52,7 @@ public class TeacherServlet extends HttpServlet {
         if("create_teacher".equals(action)){
             try {
                 teacher = new Teacher();
-                teacherReq(req);
+                teacher=teacherReq(req);
                 dao.createTeacher(teacher);
                 resp.sendRedirect(req.getContextPath() + "/teacherServlet");
             } catch (Exception e) {
@@ -60,7 +61,7 @@ public class TeacherServlet extends HttpServlet {
         } else if (action.equals("update")) {
             UUID teacherId = UUID.fromString(req.getParameter("teacher_id"));
             teacher = dao.getTeacherById(teacherId);
-            teacherReq(req);
+            teacher=teacherReq(req);
             dao.updateTeacher(teacher);
             resp.sendRedirect(req.getContextPath() + "/teacherServlet");
         }
@@ -72,7 +73,7 @@ public class TeacherServlet extends HttpServlet {
         }
     }
 
-    private void teacherReq(HttpServletRequest req) {
+    private Teacher teacherReq(HttpServletRequest req) {
         teacher.setName(req.getParameter("name"));
         teacher.setDob(req.getParameter("dob"));
         teacher.setGender(req.getParameter("gender"));
@@ -85,5 +86,6 @@ public class TeacherServlet extends HttpServlet {
         } else if ("Assistant Tutor".equals(selectedType)) {
             teacher.setType("Assistant Tutor");
         }
+        return teacher;
     }
 }

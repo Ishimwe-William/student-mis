@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Teacher Information</title>
-  <link rel="stylesheet" href="static/css/semesterList.css">
+  <link rel="stylesheet" href="static/css/index.css">
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -42,7 +42,10 @@
   <input type="radio" name="teacherType" id="tutor_ass" value="Assistant Tutor" required> Assistant Tutor<br><br>
 
   <input type="submit" value="Submit"><br><br>
+  <input name="action" value="create_teacher" hidden>
 </form>
-<jsp:include page="footer.html"/>
+<footer>
+  <jsp:include page="footer.html"/>
+</footer>
 </body>
 </html>

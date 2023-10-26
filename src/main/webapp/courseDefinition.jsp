@@ -17,7 +17,7 @@
 
     <label for="description">Course Description:</label>
     <textarea type="text" name="description" id="description" required></textarea><br><br>
-
+    <input name="action" value="createCourse" hidden>
     <input type="submit" value="Submit"><br><br>
 </form>
 <jsp:include page="footer.html"/>

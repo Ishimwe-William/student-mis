@@ -5,15 +5,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Applied Student List</title>
+    <title>Rejected Applicants List</title>
     <link rel="stylesheet" href="static/css/semesterList.css">
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<h1>Applied Student List</h1>
+<h1>Rejected Applicants List</h1>
 <div style="display: flex; justify-content: space-between;">
-    <a class="new-semester" href="/studentApplication?action=create">Create New Applicant</a>
-    <a class="new-semester" href="/studentApplication?action=view_rejected">View Rejected Applicant</a>
+    <a class="new-semester" href="/studentApplication">View Pending Applicants</a>
     <a class="new-semester" href="/studentApplication?action=view_admitted">View Admitted Student</a>
 </div><br/>
 <table class="table">
@@ -31,9 +30,9 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="student" items="${applied_students}">
+    <c:forEach var="student" items="${rejected_students}">
         <c:choose>
-        <c:when test="${student.registrationStatus == ERegistrationStatus.PENDING}">
+        <c:when test="${student.registrationStatus == ERegistrationStatus.REJECTED}">
         <!-- Code to display information for students with PENDING status -->
         <tr>
             <td>${student.fullName}</td>
@@ -51,7 +50,6 @@
                     <button class="edit-button" type="submit" name="action" value="approve">Approve</button>
                     <button class="edit-button" type="submit" name="action" value="edit">Edit</button>
                     <button class="delete-button" type="submit" name="action" value="delete">Delete</button>
-                    <button class="delete-button" type="submit" name="action" value="reject">Reject</button>
                 </form>
             </td>
         </tr>

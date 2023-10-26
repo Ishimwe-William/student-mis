@@ -5,6 +5,7 @@ import com.bunsen.studentmis.dao.student.StudentApplicationDAO;
 import com.bunsen.studentmis.dao.academicUnitDAO.DepartmentDAO;
 import com.bunsen.studentmis.model.ERegistrationStatus;
 import com.bunsen.studentmis.model.academicUnit.Department;
+import com.bunsen.studentmis.model.student.AdmittedStudent;
 import com.bunsen.studentmis.model.student.PendingStudent;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -20,8 +21,9 @@ import java.util.UUID;
 
 @WebServlet("/studentApplication")
 public class StudentApplicationServlet extends HttpServlet {
-    private StudentApplicationDAO dao=new StudentApplicationDAO();
+    private final StudentApplicationDAO dao=new StudentApplicationDAO();
     private PendingStudent student;
+    private AdmittedStudent newStudent;
     String action;
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         action=req.getParameter("action");
@@ -93,7 +95,6 @@ public class StudentApplicationServlet extends HttpServlet {
            request.getRequestDispatcher("/studentApplicationList.jsp").forward(request, response);
        }else if("create".equals(action)){
            request.getRequestDispatcher("/studentApplication.jsp").forward(request, response);
-           return;
        }else if("edit".equals(action)){
             String student_email = (request.getParameter("student_email"));
             student=new PendingStudent();
@@ -106,7 +107,15 @@ public class StudentApplicationServlet extends HttpServlet {
         student = dao.getStudentByEmail(student_email);
         request.setAttribute("studentToDelete", student);
         request.getRequestDispatcher("/deleteStudentConfirm.jsp").forward(request, response);
-        return;
+       }else if("view_admitted".equals(action)){
+           StudentAdmissionDAO studentAdmissionDAO=new StudentAdmissionDAO();
+           List<AdmittedStudent> admittedStudents=studentAdmissionDAO.getAllAdmittedStudents();
+           request.setAttribute("admittedStudents", admittedStudents);
+           request.getRequestDispatcher("/studentAdmissionList.jsp").forward(request, response);
+       }else if("view_rejected".equals(action)){
+           List<PendingStudent> students = dao.getAllApplicants();
+           request.setAttribute("rejected_students", students);
+           request.getRequestDispatcher("/studentRejectedList.jsp").forward(request, response);
        }else if("approve".equals(action)){
         String student_email = request.getParameter("student_email");
         student=new PendingStudent();
@@ -114,18 +123,40 @@ public class StudentApplicationServlet extends HttpServlet {
         if(student!=null){
             createNewAdmittedStudent(student);
             student.setRegistrationStatus(ERegistrationStatus.ADMITTED);
-            dao.approveStudent(student);
+            dao.updateStudent(student);
         }else{
             return;
         }
-        response.sendRedirect(request.getContextPath() + "/studentApplication");
-        return;
+        response.sendRedirect(request.getContextPath() + "/studentApplication?action=view_rejected");
+       }else if("reject".equals(action)){
+        String student_email = request.getParameter("student_email");
+        student=new PendingStudent();
+        student=dao.getStudentByEmail(student_email);
+
+        newStudent=new AdmittedStudent();
+        StudentAdmissionDAO studentAdmissionDAO=new StudentAdmissionDAO();
+        newStudent = studentAdmissionDAO.getStudentByEmail(student_email);
+        if(student!=null){
+            studentAdmissionDAO.rejectStudent(newStudent);
+            student.setRegistrationStatus(ERegistrationStatus.REJECTED);
+            dao.updateStudent(student);
+        }else{
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/studentApplication?action=view_admitted");
        }
     }
 
     private void createNewAdmittedStudent(PendingStudent student) {
+        String email=student.getEmail();
+        newStudent=new AdmittedStudent();
         StudentAdmissionDAO studentAdmissionDAO=new StudentAdmissionDAO();
+        newStudent=studentAdmissionDAO.getStudentByEmail(email);
+        if(newStudent==null){
         studentAdmissionDAO.createAdmittedStudent(student);
+        }else {
+            studentAdmissionDAO.approveStudent(newStudent);
+        }
     }
 
     private void handleException(HttpServletRequest req, HttpServletResponse resp, Exception e)

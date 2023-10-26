@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Create Semester</title>
-    <link rel="stylesheet" href="static/css/semesterList.css">
+    <link rel="stylesheet" href="static/css/index.css">
 </head>
 <body>
 <jsp:include page="header.jsp"/>

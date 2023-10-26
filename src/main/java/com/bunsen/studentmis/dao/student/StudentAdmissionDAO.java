@@ -1,6 +1,7 @@
 package com.bunsen.studentmis.dao.student;
 
 import com.bunsen.studentmis.HibernateUtil;
+import com.bunsen.studentmis.model.ERegistrationStatus;
 import com.bunsen.studentmis.model.student.AdmittedStudent;
 import com.bunsen.studentmis.model.student.PendingStudent;
 import org.hibernate.Session;
@@ -48,13 +49,6 @@ public class StudentAdmissionDAO {
         }
     }
 
-    public List<AdmittedStudent> getAllApplicants() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<AdmittedStudent> query = session.createQuery("FROM AdmittedStudent", AdmittedStudent.class);
-            return query.list();
-        }
-    }
-
     public AdmittedStudent getStudentByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<AdmittedStudent> query = session.createQuery("FROM AdmittedStudent WHERE email = :email", AdmittedStudent.class);
@@ -63,10 +57,11 @@ public class StudentAdmissionDAO {
         }
     }
 
-    public void approveStudent(AdmittedStudent student) {
+    public void approveStudent(AdmittedStudent newStudent) {
+        newStudent.setStatus(ERegistrationStatus.ADMITTED);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.merge(student);
+            session.merge(newStudent);
             transaction.commit();
         }
     }
@@ -82,6 +77,7 @@ public class StudentAdmissionDAO {
         admittedStudent.setDob(student.getDob());
         admittedStudent.setParPhone(student.getParPhone());
         admittedStudent.setDepartment(student.getDepartment());
+        admittedStudent.setStatus(ERegistrationStatus.ADMITTED);
 
         // Check if the student with the same email already exists
         if (getStudentByEmail(admittedStudent.getEmail()) != null) {
@@ -96,6 +92,22 @@ public class StudentAdmissionDAO {
         } catch (Exception e) {
             // Handle any exceptions that may occur during the transaction
             throw new RuntimeException("Error while creating admitted student: " + e.getMessage(), e);
+        }
+    }
+
+    public List<AdmittedStudent> getAllAdmittedStudents() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<AdmittedStudent> query = session.createQuery("FROM AdmittedStudent", AdmittedStudent.class);
+            return query.list();
+        }
+    }
+
+    public void rejectStudent(AdmittedStudent newStudent) {
+        newStudent.setStatus(ERegistrationStatus.REJECTED);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.merge(newStudent);
+            transaction.commit();
         }
     }
 }

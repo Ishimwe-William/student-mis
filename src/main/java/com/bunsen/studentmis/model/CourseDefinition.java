@@ -1,19 +1,46 @@
 package com.bunsen.studentmis.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 public class CourseDefinition {
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    @Type(type = "uuid-char")
     private UUID course_def_id;
     @Column(unique = true)
     private String code;
     private String name;
     private String description;
+
+    @ManyToMany(mappedBy = "courseDefinitions", fetch = FetchType.EAGER)
+    private Set<Teacher> teachers;
+
+    public void addTeacher(Teacher teacher) {
+        this.teachers.add(teacher);
+        teacher.getCourseDefinitions().add(this);
+    }
+
+    public void removeTeacher(Teacher teacher) {
+        this.teachers.remove(teacher);
+        teacher.getCourseDefinitions().remove(this);
+    }
+
+    public Set<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(Set<Teacher> teachers) {
+        this.teachers = teachers;
+    }
 
     public CourseDefinition() {
         this.course_def_id=UUID.randomUUID();

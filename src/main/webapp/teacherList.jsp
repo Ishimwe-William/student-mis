@@ -28,15 +28,17 @@
         <tr>
             <td>${teacher.name}</td>
             <td>${teacher.email}</td>
+            <td>${teacher.gender}</td>
             <td>${teacher.dob}</td>
             <td>${teacher.phone}</td>
             <td>${teacher.type}</td>
-            <td>${teacher.create_at}</td>
+            <td>${teacher.created_at}</td>
             <td>
                 <form action="/teacherServlet" method="get">
                     <input type="hidden" name="teacher_id" value="${teacher.teacher_id}" />
                     <button class="edit-button" type="submit" name="action" value="edit">Edit</button>
                     <button class="delete-button" type="submit" name="action" value="delete">Delete</button>
+                    <button class="edit-button" type="submit" name="action" value="view">View</button>
                 </form>
             </td>
         </tr>

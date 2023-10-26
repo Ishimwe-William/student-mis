@@ -16,7 +16,6 @@
         <mapping class="com.bunsen.studentmis.model.StudentCourse"/>
         <mapping class="com.bunsen.studentmis.model.Teacher"/>
         <mapping class="com.bunsen.studentmis.model.StudentRegistration"/>
-        <mapping class="com.bunsen.studentmis.model.Course"/>
         <mapping class="com.bunsen.studentmis.model.academicUnit.Faculty"/>
         <mapping class="com.bunsen.studentmis.model.academicUnit.Programme"/>
         <mapping class="com.bunsen.studentmis.model.academicUnit.Department"/>
