@@ -9,22 +9,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class FacultyDAO {
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public FacultyDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public Faculty createFaculty(Faculty faculty) {
+    public void createFaculty(Faculty faculty) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.save(faculty);
             session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
-            return null;
         }
-        return faculty;
     }
 
     public Faculty getFacultyById(UUID id) {
@@ -33,34 +31,11 @@ public class FacultyDAO {
         }
     }
 
-    public void updateFaculty(Faculty faculty) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.update(faculty);
-            session.getTransaction().commit();
-        }
-    }
-
-    public void deleteFaculty(Faculty faculty) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.delete(faculty);
-            session.getTransaction().commit();
-        }
-    }
-
-    public List<Faculty> getAllFaculties() {
-        Session session = sessionFactory.openSession();
-        List<Faculty> faculties = session.createQuery("FROM Faculty ", Faculty.class).list();
-        session.close();
-        return faculties;
-    }
     public List<Faculty> getAllFacultiesByProgramme(UUID programId) {
         try (Session session = sessionFactory.openSession()) {
-            List<Faculty> faculties = session.createQuery("FROM Faculty f WHERE f.programme.id = :programId", Faculty.class)
+            return session.createQuery("FROM Faculty f WHERE f.programme.id = :programId", Faculty.class)
                     .setParameter("programId", programId)
                     .list();
-            return faculties;
         }
     }
 

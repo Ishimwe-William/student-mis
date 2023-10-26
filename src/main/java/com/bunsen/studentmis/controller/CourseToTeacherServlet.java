@@ -1,8 +1,6 @@
 package com.bunsen.studentmis.controller;
 
 import com.bunsen.studentmis.HibernateUtil;
-import com.bunsen.studentmis.dao.CourseDefinitionDao;
-import com.bunsen.studentmis.dao.TeacherDao;
 import com.bunsen.studentmis.model.CourseDefinition;
 import com.bunsen.studentmis.model.Teacher;
 import jakarta.servlet.ServletException;
@@ -18,11 +16,9 @@ import java.util.UUID;
 
 @WebServlet("/teacherAssignment")
 public class CourseToTeacherServlet extends HttpServlet {
-    private TeacherDao teacherDao = new TeacherDao();
-    private CourseDefinitionDao courseDefinitionDao = new CourseDefinitionDao();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
 
         if (action != null && action.equals("assignTeachersToCourse")) {

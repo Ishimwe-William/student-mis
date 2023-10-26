@@ -4,7 +4,6 @@ import com.bunsen.studentmis.dao.CourseDefinitionDao;
 import com.bunsen.studentmis.dao.TeacherDao;
 import com.bunsen.studentmis.model.CourseDefinition;
 import com.bunsen.studentmis.model.Teacher;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,15 +20,13 @@ public class CourseDefinitionServlet extends HttpServlet {
 
     CourseDefinitionDao dao=new CourseDefinitionDao();
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
        String action=req.getParameter("action");
        if("createCourse".equals(action)){
-           CourseDefinition courseDefinition=new CourseDefinition();
-           courseDefinition=courseRequest(req);
+           new CourseDefinition();
+           CourseDefinition courseDefinition = courseRequest(req);
            dao.createCourseDefinition(courseDefinition);
            resp.sendRedirect(req.getContextPath() + "/courseDefinitionServlet");
-       }else if("updated".equals(action)){
-
        }
     }
 

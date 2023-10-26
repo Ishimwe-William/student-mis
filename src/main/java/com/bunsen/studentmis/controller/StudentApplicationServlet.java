@@ -33,12 +33,6 @@ public class StudentApplicationServlet extends HttpServlet {
                 student = createStudentFromRequest(req);
                 dao.saveStudent(student,req,resp);
                 resp.sendRedirect(req.getContextPath() + "/studentApplication");
-//            Mailer mailer=new Mailer();
-//            String emailBody="Congratulation! Your registration is being reviewed.\n" +
-//                    "We will send the verification once you're approved soon.\n" +
-//                    "Please be patient!\n\n" +
-//                    "Go bless you!";
-//            mailer.sendEmail(student.getEmail(),emailBody);
             } catch (Exception e) {
                 handleException(req, resp, e);
             }

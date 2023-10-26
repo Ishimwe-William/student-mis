@@ -44,49 +44,54 @@ public class AcademicUnit extends HttpServlet {
             return;
         }
 
-        if ("create_programme".equals(action)) {
-            String code = request.getParameter("prog_code").toUpperCase();
-            String name = request.getParameter("prog_name").toUpperCase();
+        switch (action) {
+            case "create_programme": {
+                String code = request.getParameter("prog_code").toUpperCase();
+                String name = request.getParameter("prog_name").toUpperCase();
 
-            Programme programme = new Programme();
-            programme.setCode(code);
-            programme.setName(name);
-            programmeDAO.createProgramme(programme);
-        } else if ("create_faculty".equals(action)) {
-            String code = request.getParameter("fac_code").toUpperCase();
-            String name = request.getParameter("fac_name").toUpperCase();
-            String selectedProgramId = request.getParameter("programme_id");
+                Programme programme = new Programme();
+                programme.setCode(code);
+                programme.setName(name);
+                programmeDAO.createProgramme(programme);
+                break;
+            }
+            case "create_faculty": {
+                String code = request.getParameter("fac_code").toUpperCase();
+                String name = request.getParameter("fac_name").toUpperCase();
+                String selectedProgramId = request.getParameter("programme_id");
 
-            if (selectedProgramId != null && !selectedProgramId.isEmpty()) {
-                UUID programId = UUID.fromString(selectedProgramId);
-                Programme programme = programmeDAO.getProgrammeById(programId);
-                System.out.println(programme.getCode());
+                if (selectedProgramId != null && !selectedProgramId.isEmpty()) {
+                    UUID programId = UUID.fromString(selectedProgramId);
+                    Programme programme = programmeDAO.getProgrammeById(programId);
+                    System.out.println(programme.getCode());
 
-                if (programme != null) {
                     Faculty faculty = new Faculty();
                     faculty.setCode(code);
                     faculty.setName(name);
                     faculty.setProgramme(programme);
                     facultyDAO.createFaculty(faculty);
                 }
+                break;
             }
-        } else if ("create_department".equals(action)) {
-            String name = request.getParameter("dep_name").toUpperCase();
-            String code = request.getParameter("dep_code").toUpperCase();
-            String selectedFacultyId = request.getParameter("faculty_id");
-            System.out.println(selectedFacultyId);
+            case "create_department": {
+                String name = request.getParameter("dep_name").toUpperCase();
+                String code = request.getParameter("dep_code").toUpperCase();
+                String selectedFacultyId = request.getParameter("faculty_id");
+                System.out.println(selectedFacultyId);
 
-            if (selectedFacultyId != null && !selectedFacultyId.isEmpty()) {
-                UUID facultyId = UUID.fromString(selectedFacultyId);
-                Faculty faculty = facultyDAO.getFacultyById(facultyId);
+                if (selectedFacultyId != null && !selectedFacultyId.isEmpty()) {
+                    UUID facultyId = UUID.fromString(selectedFacultyId);
+                    Faculty faculty = facultyDAO.getFacultyById(facultyId);
 
-                if (faculty != null) {
-                    Department department = new Department();
-                    department.setCode(code);
-                    department.setName(name);
-                    department.setFaculty(faculty);
-                    departmentDAO.createDepartment(department);
+                    if (faculty != null) {
+                        Department department = new Department();
+                        department.setCode(code);
+                        department.setName(name);
+                        department.setFaculty(faculty);
+                        departmentDAO.createDepartment(department);
+                    }
                 }
+                break;
             }
         }
         request.getRequestDispatcher("/academicUnitHome.jsp").forward(request, response);
@@ -95,39 +100,44 @@ public class AcademicUnit extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("operation");
+        Gson json;
 
         if (action == null) {
             request.getRequestDispatcher("/academicUnitHome.jsp").forward(request, response);
             return;
         }
 
-        try (PrintWriter out = response.getWriter()) {
-            if ("get_programs".equals(action)) {
-                List<Programme> programmes = programmeDAO.getAllProgrammes();
-                Gson json = new Gson();
-                String programList = json.toJson(programmes);
-                response.setContentType("text/html");
-                response.getWriter().write(programList);
-            } else if ("get_faculty".equals(action)) {
-                String selectedProgramId = request.getParameter("selectedProgramId");
-                if (selectedProgramId != null && !selectedProgramId.isEmpty()) {
-                    UUID programmeId = UUID.fromString(selectedProgramId);
-                    List<Faculty> faculties = facultyDAO.getAllFacultiesByProgramme(programmeId);
-                    Gson json = new Gson();
-                    String facultyList = json.toJson(faculties);
+        try (PrintWriter ignored = response.getWriter()) {
+            switch (action) {
+                case "get_programs":
+                    List<Programme> programmes = programmeDAO.getAllProgrammes();
+                    json = new Gson();
+                    String programList = json.toJson(programmes);
                     response.setContentType("text/html");
-                    response.getWriter().write(facultyList);
-                }
-            }else if ("get_departments".equals(action)) {
-                String selectedFacultyId = request.getParameter("selectedFacultyId");
-                if (selectedFacultyId != null && !selectedFacultyId.isEmpty()) {
-                    UUID facultyId = UUID.fromString(selectedFacultyId);
-                    List<Department> departments = departmentDAO.getAllDepartmentsByFaculty(facultyId);
-                    Gson json = new Gson();
-                    String departmentList = json.toJson(departments);
-                    response.setContentType("text/html");
-                    response.getWriter().write(departmentList);
-                }
+                    response.getWriter().write(programList);
+                    break;
+                case "get_faculty":
+                    String selectedProgramId = request.getParameter("selectedProgramId");
+                    if (selectedProgramId != null && !selectedProgramId.isEmpty()) {
+                        UUID programmeId = UUID.fromString(selectedProgramId);
+                        List<Faculty> faculties = facultyDAO.getAllFacultiesByProgramme(programmeId);
+                        json = new Gson();
+                        String facultyList = json.toJson(faculties);
+                        response.setContentType("text/html");
+                        response.getWriter().write(facultyList);
+                    }
+                    break;
+                case "get_departments":
+                    String selectedFacultyId = request.getParameter("selectedFacultyId");
+                    if (selectedFacultyId != null && !selectedFacultyId.isEmpty()) {
+                        UUID facultyId = UUID.fromString(selectedFacultyId);
+                        List<Department> departments = departmentDAO.getAllDepartmentsByFaculty(facultyId);
+                        json = new Gson();
+                        String departmentList = json.toJson(departments);
+                        response.setContentType("text/html");
+                        response.getWriter().write(departmentList);
+                    }
+                    break;
             }
         }
     }

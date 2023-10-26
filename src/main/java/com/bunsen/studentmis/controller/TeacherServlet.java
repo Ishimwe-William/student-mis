@@ -43,11 +43,10 @@ public class TeacherServlet extends HttpServlet {
             teacher = dao.getTeacherById(teacher_id);
             request.setAttribute("teacherToDelete", teacher);
             request.getRequestDispatcher("/deleteTeacher.jsp").forward(request, response);
-            return;
         }
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String action=req.getParameter("action");
         if("create_teacher".equals(action)){
             try {

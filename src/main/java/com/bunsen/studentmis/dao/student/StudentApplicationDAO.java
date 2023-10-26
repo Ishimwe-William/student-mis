@@ -72,11 +72,4 @@ public class StudentApplicationDAO {
         }
     }
 
-    public void approveStudent(PendingStudent student) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.merge(student);
-            transaction.commit();
-        }
-    }
 }

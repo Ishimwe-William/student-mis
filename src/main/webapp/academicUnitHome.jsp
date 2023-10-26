@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -155,7 +155,7 @@
 <form id="programmeForm" action="/academicUnitHome" method="post" style="display: none">
     <br/><label>Create Programme</label>
     <input type="hidden" name="action" value="create_programme">
-    <input id="prog_name" name="prog_name" type="text" required placeholder="Programme Name">
+    <label for="prog_name"></label><input id="prog_name" name="prog_name" type="text" required placeholder="Programme Name">
     <input id="prog_code" name="prog_code" type="text" required placeholder="Programme Code">
     <button type="submit">Create</button>
 </form><br/>

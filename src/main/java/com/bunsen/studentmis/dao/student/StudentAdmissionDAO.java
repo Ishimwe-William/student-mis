@@ -12,43 +12,6 @@ import java.util.List;
 
 public class StudentAdmissionDAO {
 
-    public void saveAdmittedStudent(AdmittedStudent student) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            if (getStudentByEmail(student.getEmail()) == null) {
-                session.save(student); // Save the new student
-                transaction.commit();
-            } else {
-                throw new RuntimeException("A student with that email already exists!");
-            }
-        }
-    }
-
-    public void updateStudent(AdmittedStudent student) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.merge(student);
-            transaction.commit();
-        }
-    }
-
-    public void deleteStudent(AdmittedStudent student) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.delete(student);
-            transaction.commit();
-        }
-    }
-
-    public AdmittedStudent viewStudent(String email) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<AdmittedStudent> query = session.createQuery("FROM AdmittedStudent WHERE email = :email", AdmittedStudent.class);
-            query.setParameter("email", email);
-            return query.uniqueResult();
-        }
-    }
-
     public AdmittedStudent getStudentByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<AdmittedStudent> query = session.createQuery("FROM AdmittedStudent WHERE email = :email", AdmittedStudent.class);
